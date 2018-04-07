@@ -1,3 +1,4 @@
+import pygame.freetype
 import pygame
 import sys
 
@@ -21,7 +22,7 @@ class Option:
 		if self.hovered:
 			return (255, 255, 255)
 		else:
-			return (100, 100, 100)
+			return (77, 77, 77)
 		
 	def set_rect(self):
 		self.set_rend()
@@ -29,14 +30,15 @@ class Option:
 		self.rect.topleft = self.pos
 
 pygame.init()
-screenX = 480
-screenY = 320
+screenX = 512
+screenY = 512
+count = 1
 screen = pygame.display.set_mode((screenX, screenY))
 menu_font = pygame.font.Font(None, 40)
-options = [Option("Redicover Science", (screenX/5, screenY)),
-		   Option("Save this person", (screenX/4, screenY/3)), 
-		   Option("Save another person", (screenX/4, screenY/3+50)),
-		   Option("Save Devin Uner", (screenX/4, screenY/3+100))]
+title = [Option("Rediscover Science", (screenX/20, screenY/15))]
+options = [Option("Save this person", (screenX/20, screenY/4)),
+           Option("Save another person", (screenX/20, screenY/4+50)),
+           Option("Save Devin Uner", (screenX/20, screenY/4+100))]
 
 while True:
 	pygame.event.pump()
@@ -45,8 +47,14 @@ while True:
 		if my_event.type == pygame.QUIT:
 			sys.exit()
 
-	screen.fill((57, 82, 54)) #colored background
+	screen.fill((204,153,255)) #colored background
+	for t in title:
+		menu_font = pygame.font.Font(None, 60)
+		pygame.font.Font.set_underline(menu_font, True)
+		t.draw()
+	
 	for option in options:
+		menu_font = pygame.font.Font(None, 40)
 		if option.rect.collidepoint(pygame.mouse.get_pos()):
 			option.hovered = True
 			for my_event in event:
