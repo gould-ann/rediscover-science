@@ -112,7 +112,7 @@ def get_next_reaper_position(current_reaper_pos):
 
 
 mobs = [{"type": "REAPER", "position": [1, 1]}]
-
+projectiles = []
 
 while 1:
     for event in pygame.event.get():
@@ -121,6 +121,8 @@ while 1:
 
         # movement
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_x:
+                projectiles += [{"name": "bullet", "position": [player_location[0]*32 + 16, player_location[1]*32 + 16], "speed": [0, 8] if player_direction == "d" else [0, -8] if player_direction == "u" else [8, 0] if player_direction == "r" else [-8, 0]}]
             if event.key == pygame.K_LEFT :
                 player_direction = "l"
                 currently_moving = True
@@ -163,8 +165,26 @@ while 1:
                 else:
                     mob["position"] = next_position
                 grid[mob["position"][0]][mob["position"][1]] = "r" 
-
-
     screen.fill(black)
+    for i in range(len(projectiles)):
+        if projectiles[i]["name"] == "bullet":
+                image = pygame.image.load("bullet.png")
+                rect = image.get_rect()
+                rect.x = projectiles[i]["position"][0]
+                rect.y = projectiles[i]["position"][1]
+                screen.blit(image, rect)
+                projectiles[i]["position"][0] += projectiles[i]["speed"][0]
+                projectiles[i]["position"][1] += projectiles[i]["speed"][1]
+
+                # ok so now we need a switch for the different things that could be at the bullets location
+                bullet_grid_location = [int(projectiles[i]["position"][0] / 32), int(projectiles[i]["position"][0]/32)]
+                
+                
+                if grid[bullet_grid_location[0]][bullet_grid_location[1]] == "r":
+                    # it hit a reaper
+                    print "hit a reaper"
+
+
+    
     draw_grid()
     pygame.display.update()
