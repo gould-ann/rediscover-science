@@ -39,15 +39,12 @@ count = 1
 menu_font = pygame.font.Font(None, 40)
 title = [Option("Rediscover Science", (width/20, height/15))]
 options = [Option("Play game!", (width/20, height/4)),
-           Option("Description", (width/20, height/4+50)),
-           Option("Save Devin Uner", (width/20, height/4+100))]
+           Option("Description", (width/20, height/4+50))]
 
 myfont = pygame.font.SysFont("monospace", 15)
 
 pygame.display.set_mode(size, pygame.DOUBLEBUF)
 black = 102, 102, 153
-
-
 
 
 
@@ -147,11 +144,6 @@ def get_next_reaper_position(current_reaper_pos):
             current_point[0] += 1
         a_star_grid[old_point[0]][old_point[1]] = "*"
     a_star_grid[old_point[0]][old_point[1]] = "0"
-    # print "--------------"
-    # for i in a_star_grid:
-    #     for c in i:
-    #         print c,
-    #     print ""
     return old_point
 
 def display_health():
@@ -172,7 +164,6 @@ def read_level(file_name):
             winning_text = line.replace("TEXT: ", "")
         else:
             grid += [line.split(",")]
-    print len(grid), len(grid[0])
     for r in range(len(grid)):
         for c in range(len(grid)):
             if grid[r][c] == "r":
@@ -191,49 +182,37 @@ def display_text(text):
         screen.blit(label, (20, count*20 + 20))
         count += 1
     if "Lovelace" in text:
-        print "adding a pic of lovelace"
         image = pygame.image.load("big_lovelace.png")
         rect = image.get_rect()
         rect.x = 200
         rect.y = 350
         screen.blit(image, rect)
     if "Atanasoff" in text:
-        print "adding a pic of atanasoff"
         image = pygame.image.load("big_atanasoff.png")
         rect = image.get_rect()
         rect.x = 200
         rect.y = 350
         screen.blit(image, rect)
     if "Turing" in text:
-        print "adding a pic of turing"
         image = pygame.image.load("big_turing.png")
         rect = image.get_rect()
         rect.x = 200
         rect.y = 350
         screen.blit(image, rect)
     if "Johnson" in text:
-        print "adding a pic of johnson"
         image = pygame.image.load("big_johnson.png")
         rect = image.get_rect()
         rect.x = 200
         rect.y = 350
         screen.blit(image, rect)
     if "Hopper" in text:
-        print "adding a pic of hopper"
         image = pygame.image.load("big_hopper.png")
         rect = image.get_rect()
         rect.x = 200
         rect.y = 350
         screen.blit(image, rect)
-    if "BEAT" in text:
-        print "adding a pic of EVERYONE"
-        image = pygame.image.load("all_together.png")
-        rect = image.get_rect()
-        rect.x = 50
-        rect.y = 350
-        screen.blit(image, rect)
     pygame.display.update()
-    time.sleep(10)
+    time.sleep(2)
 
 playing_game = False
 play_time = 0
@@ -287,7 +266,6 @@ while 1:
                     if time.time() - play_time < best:
                         json.dump(time.time() - play_time, open("highscore.json", "w"))
                     display_text("YOU BEAT THE GAME!!! it took you: " + str(time.time() - play_time) + " s\\nHighscore is: " + str(json.load(open("highscore.json"))))
-
                     sys.exit()
 
                 read_level("level_" + str(level) + ".txt")
@@ -320,21 +298,16 @@ while 1:
                     projectiles[i]["position"][1] += projectiles[i]["speed"][1]
 
                     # ok so now we need a switch for the different things that could be at the bullets location
-                    # if (projectiles[i]["position"][0] / 32) < 16 and (projectiles[i]["position"][0]/32) <16 and (projectiles[i]["position"][0]/32) > 0 and (projectiles[i]["position"][0]/32) > 0:
-                    bullet_grid_location = [int(projectiles[i]["position"][0] / 32), int(projectiles[i]["position"][1]/32)]
                 
-                    print bullet_grid_location, projectiles[i]["position"], int(projectiles[i]["position"][1] / 32)
-
+                    bullet_grid_location = [int(projectiles[i]["position"][0] / 32), int(projectiles[i]["position"][1]/32)]
+                   
                     if not (bullet_grid_location[0] < 16 and bullet_grid_location[0] >= 0 and bullet_grid_location[1] >= 0 and bullet_grid_location[1] < 16):
                         projectiles[i] = None
                     elif grid[bullet_grid_location[0]][bullet_grid_location[1]] == "r":
                         # it hit a reaper
-                        print "hit a reaper"
-                        print mobs
                         projectiles[i] = None
                         for i in range(len(mobs)):
                             if mobs[i]["position"][0] == bullet_grid_location[0] and mobs[i]["position"][1] == bullet_grid_location[1]:
-                                print "hit"
                                 mobs[i]["health"] -= 1
                                 if mobs[i]["health"] < 1:
                                     mobs[i] = None
@@ -343,7 +316,6 @@ while 1:
                             mobs.remove(None)
                     elif grid[bullet_grid_location[0]][bullet_grid_location[1]] == "s":
                         # it hit a stone
-                        print "hit a stone"
                         projectiles[i] = None
         while None in projectiles:
             projectiles.remove(None)
@@ -373,7 +345,6 @@ while 1:
                 for my_event in event:
                     if my_event.type == pygame.MOUSEBUTTONUP:
                         pos = pygame.mouse.get_pos()
-                        print option.text
                         if option.text == "Play game!":
                             playing_game = True
                             play_time = time.time()
