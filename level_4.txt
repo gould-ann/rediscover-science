@@ -14,4 +14,4 @@
  ,s, ,s,s,s,s,s, ,s,s,s,s,s, , 
  , , , , , , , , , , , , , , , 
  ,p,s, ,s, ,s, ,s, ,s, ,s, ,s, 
- TEXT: hey you found a thing \n good for you!
+ TEXT: Katherine Johnson is a mathematician \nwho made contributions to NASA \nwith the early application of \ndigital electronic computers. \nKatherine originally had to \ncompute manual computation for \nNASA until NASA adopted digital \ncomputers. She helped compute trajectories \nfor Apollo 11 (the first time \nhumans went to the moon) along with \nProject Mercury and helped \nraise awareness for the \nuse of computers to compute equations

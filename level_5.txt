@@ -14,4 +14,4 @@
  , ,s,s,s,s,s,s,s,s,s,s,s,s, , 
  ,r, , , , , , , , , , , , , , 
  ,s,s,s,s,s,s,s,s,s,s,s,s,s,s, 
-TEXT: hey you found a thing \n good for you!\n Plus you won the game so gg
+TEXT: Grace Hopper was a computer scientist \nwho created the first high leveled\n programming language. High leveled \nprogramming languages and compilers are \na fundamental for creating programs \nwith code today. High leveled programming \nlanguages are easier for \npeople to understand how to program, \nand are typically compiled (or ran) into \nother programs that are easy \nfor the computer to read. \nWithout Grace Hopper, programming \nlanguages would be a lot more \ndifficult to understand and create programs for.\n Plus you won the game so gg

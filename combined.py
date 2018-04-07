@@ -210,9 +210,16 @@ def display_text(text):
         rect.x = 200
         rect.y = 350
         screen.blit(image, rect)
-    if "johnson" in text:
+    if "Johnson" in text:
         print "adding a pic of johnson"
         image = pygame.image.load("big_johnson.png")
+        rect = image.get_rect()
+        rect.x = 200
+        rect.y = 350
+        screen.blit(image, rect)
+    if "Hopper" in text:
+        print "adding a pic of hopper"
+        image = pygame.image.load("big_hopper.png")
         rect = image.get_rect()
         rect.x = 200
         rect.y = 350
