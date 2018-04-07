@@ -232,7 +232,7 @@ def display_text(text):
         rect.y = 350
         screen.blit(image, rect)
     pygame.display.update()
-    time.sleep(30)
+    time.sleep(5)
 
 playing_game = False
 play_time = 0
