@@ -1,0 +1,170 @@
+import pygame
+import sys
+import time
+
+pygame.init()
+size = width, height = 512, 512
+pygame.display.set_mode(size, pygame.DOUBLEBUF)
+black = 50, 50, 50
+screen = pygame.display.set_mode(size)
+
+grid = [["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "s", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "s", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "s", "", "", "", "", "", "", "", ""],
+        ["", "", "", "s", "s", "s", "s", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "s", "s", "s", "s", "s", "", "", "", "", ""],
+        ["", "", "", "", "", "", "s", "", "", "", "s", "", "", "", "", ""],
+        ["", "", "", "", "", "", "s", "", "", "", "s", "", "", "", "", ""],
+        ["", "", "", "", "", "", "s", "", "", "", "s", "", "", "", "", ""],
+        ["", "", "", "", "", "", "s", "", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "s", "", "s", "", "s", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "s", "s", "", "", "", "", ""],
+        ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]]
+
+
+def draw_grid():
+    for r in range(len(grid)):
+        for c in range(len(grid[r])):
+            if grid[r][c] == "s":
+                image = pygame.image.load("brick.png")
+                rect = image.get_rect()
+                rect.x = r*32
+                rect.y = c*32
+                screen.blit(image, rect)
+            if grid[r][c] == "p":
+                image = pygame.image.load("pirate.png")
+                rect = image.get_rect()
+                rect.x = r*32
+                rect.y = c*32
+                screen.blit(image, rect)
+            if grid[r][c] == "r":
+                image = pygame.image.load("REAPER.png")
+                rect = image.get_rect()
+                rect.x = r*32
+                rect.y = c*32
+                screen.blit(image, rect)
+
+
+# stuff for player movement
+last_moved = 0
+currently_moving = False
+player_direction = "r"
+player_location = [10, 10]
+grid[player_location[0]][player_location[1]] = "p"
+
+
+
+# stuff for REAPERS
+last_enemy_move = 0
+def get_next_reaper_position(current_reaper_pos):
+    # make a list of the current spreading spots
+    a_star_grid = [[" " for i in range(width / 32)] for j in range(height / 32)]
+    spreading_spots = [current_reaper_pos]
+    a_star_grid[current_reaper_pos[0]][current_reaper_pos[1]] = "X"
+    while (player_location[0], player_location[1]) not in spreading_spots:
+        # print spreading_spots
+        # print player_location
+        new_spreading_spots = []
+        for spot in spreading_spots:
+
+            if spot[0] + 1 < len(a_star_grid) and a_star_grid[spot[0] + 1][spot[1] + 0] == " " and grid[spot[0] + 1][spot[1]] != "s":
+                new_spreading_spots += [(spot[0] + 1, spot[1] + 0)]
+                a_star_grid[spot[0] + 1][spot[1] + 0] = "u"
+
+            if spot[0] - 1 >= 0 and a_star_grid[spot[0] - 1][spot[1] + 0] == " " and grid[spot[0] - 1][spot[1]] != "s":
+                new_spreading_spots += [(spot[0] - 1, spot[1] + 0)]
+                a_star_grid[spot[0] - 1][spot[1] + 0] = "d"
+
+            if spot[1] + 1 < len(a_star_grid) and a_star_grid[spot[0] + 0][spot[1] + 1] == " " and grid[spot[0]][spot[1] + 1] != "s":
+                new_spreading_spots += [(spot[0] + 0, spot[1] + 1)]
+                a_star_grid[spot[0] + 0][spot[1] + 1] = "r"
+
+            if spot[1] - 1 >= 0 and a_star_grid[spot[0] + 0][spot[1] - 1] == " " and grid[spot[0]][spot[1] - 1] != "s":
+                new_spreading_spots += [(spot[0] + 0, spot[1] - 1)]
+                a_star_grid[spot[0] + 0][spot[1] - 1] = "l"
+        spreading_spots = new_spreading_spots
+
+    current_point = [player_location[0], player_location[1]]
+    old_point = [player_location[0], player_location[1]]
+    while a_star_grid[current_point[0]][current_point[1]] != "X":
+        old_point = [current_point[0], current_point[1]]
+        if a_star_grid[current_point[0]][current_point[1]] == "r":
+            current_point[1] -= 1
+        elif a_star_grid[current_point[0]][current_point[1]] == "l":
+            current_point[1] += 1
+        elif a_star_grid[current_point[0]][current_point[1]] == "u":
+            current_point[0] -= 1
+        elif a_star_grid[current_point[0]][current_point[1]] == "d":
+            current_point[0] += 1
+        a_star_grid[old_point[0]][old_point[1]] = "*"
+    a_star_grid[old_point[0]][old_point[1]] = "0"
+    # print "--------------"
+    # for i in a_star_grid:
+    #     for c in i:
+    #         print c,
+    #     print ""
+    return old_point
+
+
+
+mobs = [{"type": "REAPER", "position": [1, 1]}]
+
+
+while 1:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+
+        # movement
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT :
+                player_direction = "l"
+                currently_moving = True
+            if event.key == pygame.K_RIGHT :
+                player_direction = "r"
+                currently_moving = True
+            if event.key == pygame.K_DOWN :
+                player_direction = "d"
+                currently_moving = True
+            if event.key == pygame.K_UP :
+                player_direction = "u"
+                currently_moving = True
+
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT or event.key == pygame.K_DOWN or event.key == pygame.K_UP:
+                currently_moving = False
+
+    # print currently_moving
+    if currently_moving and time.time() - last_moved > 0.1:
+        last_moved = time.time()
+        grid[player_location[0]][player_location[1]] = ""
+        if player_direction == "d" and player_location[1] + 1 < len(grid) and grid[player_location[0]][player_location[1] + 1] == "":
+            player_location[1] += 1
+        if player_direction == "u" and player_location[1] - 1 >= 0 and grid[player_location[0]][player_location[1] - 1] == "":
+            player_location[1] -= 1
+        if player_direction == "r" and player_location[0] + 1 < len(grid) and grid[player_location[0] + 1][player_location[1]] == "":
+            player_location[0] += 1
+        if player_direction == "l"  and player_location[0] - 1 >= 0 and grid[player_location[0] - 1][player_location[1]] == "":
+            player_location[0] -= 1
+        grid[player_location[0]][player_location[1]] = "p"
+
+    if time.time() - last_enemy_move > 0.4:
+        last_enemy_move = time.time()
+        for mob in mobs:
+            grid[mob["position"][0]][mob["position"][1]] = ""
+            if mob["type"] == "REAPER":
+                next_position = get_next_reaper_position(mob["position"])
+                if next_position[0] == player_location[0] and next_position[1] == player_location[1]:
+                    print "FIGHT"
+                else:
+                    mob["position"] = next_position
+                grid[mob["position"][0]][mob["position"][1]] = "r" 
+
+
+    screen.fill(black)
+    draw_grid()
+    pygame.display.update()
