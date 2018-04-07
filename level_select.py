@@ -9,7 +9,7 @@ class Selections:
         self.set_rect()
         self.draw()
 
-    def draw_box(self):
+    def draw(self):
         self.set_rend()
         screen.blit(self.rend, self.rect)
 
@@ -19,7 +19,7 @@ class Selections:
         self.rect.topleft = self.location
 
     def get_color(self):
-        return (255, 255, 255) if self.hovered else (100, 100, 100)
+        return (255, 255, 255) if self.hovered else (77, 77, 77)
 
     def set_rend(self):
         self.rend = menu_font.render(self.text, True, self.get_color())
@@ -37,7 +37,7 @@ options = [Selections("NEW GAME", (140, 105)), Selections("LOAD GAME", (135, 155
 while True:
     pygame.event.pump()
     event = pygame.event.get()
-    screen.fill((57, 82, 54)) #colored background
+    screen.fill((204, 153, 255)) #colored background
     for option in options:
         if option.rect.collidepoint(pygame.mouse.get_pos()):
             for events in event:
