@@ -4,7 +4,7 @@ import sys
 pygame.init()
 
 
-size = width, height = 800, 800
+size = width, height = 512, 512
 pygame.display.set_mode(size, pygame.DOUBLEBUF)
 black = 0, 0, 0
 screen = pygame.display.set_mode(size)
@@ -22,6 +22,8 @@ class Bullet(pygame.sprite.Sprite):
         
     def draw(self):
         screen.blit(self.image, self.rect)
+
+    #create collision with enemy... in the enemy one :D
 
     def shoot(self, dir, location_x, location_y):
         self.rect.x = location_x

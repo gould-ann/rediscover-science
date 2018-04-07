@@ -177,8 +177,9 @@ while 1:
                 projectiles[i]["position"][1] += projectiles[i]["speed"][1]
 
                 # ok so now we need a switch for the different things that could be at the bullets location
-                bullet_grid_location = [int(projectiles[i]["position"][0] / 32), int(projectiles[i]["position"][0]/32)]
-                
+                if (projectiles[i]["position"][0] / 32) < 16 and (projectiles[i]["position"][0]/32) <16 and (projectiles[i]["position"][0]/32) > 0 and (projectiles[0]["position"][0]/32) > 0:
+                    bullet_grid_location = [int(projectiles[i]["position"][0] / 32), int(projectiles[i]["position"][0]/32)]
+            
                 
                 if grid[bullet_grid_location[0]][bullet_grid_location[1]] == "r":
                     # it hit a reaper
