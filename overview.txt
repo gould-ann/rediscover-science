@@ -1,3 +1,1 @@
-TEXT: The Reapers have gone back in time and \nkidnapped important technical investors \nand have taken them into the Reaper-driven \nfuture.\nYour job is to play the role of Roxie Rage and go into the future to \nrescue the technical inventors from the Reapers Society.
-
-\n\nUse the arrow keys to control Roxie and the x key to fire your phaser \ngun to defeat the Reapers.\n
+The Reapers have gone back in time and \nkidnapped important technical investors \nand have taken them into the Reaper-driven \nfuture.\nYour job is to play the role of Roxie Rage \nand go into the future to \nrescue the technical inventors \nfrom the Reapers Society.\n\nUse the arrow keys to control Roxie and the \nx key to fire your phaser \ngun to defeat the Reapers.\n

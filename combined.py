@@ -2,6 +2,7 @@ import pygame
 import sys
 import time
 import pygame.freetype
+import json
 
 
 class Option:
@@ -38,7 +39,7 @@ count = 1
 menu_font = pygame.font.Font(None, 40)
 title = [Option("Rediscover Science", (width/20, height/15))]
 options = [Option("Play game!", (width/20, height/4)),
-           Option("Save another person", (width/20, height/4+50)),
+           Option("Description", (width/20, height/4+50)),
            Option("Save Devin Uner", (width/20, height/4+100))]
 
 myfont = pygame.font.SysFont("monospace", 15)
@@ -225,10 +226,11 @@ def display_text(text):
         rect.y = 350
         screen.blit(image, rect)
     pygame.display.update()
-    time.sleep(10)
+    time.sleep(2)
 
 playing_game = False
 play_time = 0
+in_description = False
 while 1:
     if playing_game:
         for event in pygame.event.get():
@@ -274,7 +276,11 @@ while 1:
                 display_text(winning_text)
 
                 if level == 6:
-                    display_text("YOU BEAT THE GAME!!! it took you: " + str(time.time() - play_time) + " seconds")
+                    best = json.load(open("highscore.json"))
+                    if time.time() - play_time < best:
+                        json.dump(time.time() - play_time, open("highscore.json", "w"))
+                    display_text("YOU BEAT THE GAME!!! it took you: " + str(time.time() - play_time) + " s\\nHighscore is: " + str(json.load(open("highscore.json"))))
+                    sys.exit()
 
                 read_level("level_" + str(level) + ".txt")
             grid[player_location[0]][player_location[1]] = "p"
@@ -343,6 +349,8 @@ while 1:
         for my_event in event:
             if my_event.type == pygame.QUIT:
                 sys.exit()
+            if my_event.type == pygame.KEYDOWN and my_event.key == pygame.K_q:
+                in_description = False
 
         screen.fill((204,153,255)) #colored background
         for t in title:
@@ -361,7 +369,18 @@ while 1:
                         if option.text == "Play game!":
                             playing_game = True
                             play_time = time.time()
+                        if option.text == "Description":
+                            in_description = True
             else:
                 option.hovered = False
             option.draw()
+
+        if in_description:
+                screen.fill(black)
+                count = 1
+                for l in open("overview.txt").read().split("\\n"):
+                    label = myfont.render(l, 1, (0,255,255))
+                    screen.blit(label, (20, count*20 + 20))
+                    count += 1
+
     pygame.display.update()
