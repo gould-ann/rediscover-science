@@ -24,8 +24,8 @@ class Bullet(pygame.sprite.Sprite):
         screen.blit(self.image, self.rect)
 
     def shoot(self, dir, location_x, location_y):
-        bulley.rect.x = location_x
-        bulley.rect.y = location_y
+        self.rect.x = location_x
+        self.rect.y = location_y
         if dir == "l":
             self.speed = [-8,0]
         if dir == "u":
@@ -34,7 +34,6 @@ class Bullet(pygame.sprite.Sprite):
             self.speed = [0,8]
         if dir == "r":
             self.speed = [8,0]
-        print "made it here"
 
 
 class Player(pygame.sprite.Sprite):
@@ -90,8 +89,9 @@ class Wall():
 
 player = Player(400,400)
 walley = Wall(100, 100,300,300)
-bulley = Bullet(-10, -10, [0, 0]) 
 
+bullets = pygame.sprite.Group();
+# bulley = Bullet(-10, -10, [0, 0])
 
 while 1:
     for event in pygame.event.get():
@@ -101,8 +101,11 @@ while 1:
         if event.type == pygame.KEYDOWN:
             #x to shoot bullet
             if event.key == pygame.K_x:
-                bulley.speed = [8,8]
-                bulley.shoot(player.dir, player.rect.x, player.rect.y)
+                new_bullet = Bullet(0, 0, [0, 0])
+                new_bullet.rect.x = player.rect.x
+                new_bullet.rect.y = player.rect.y
+                new_bullet.shoot(player.dir, player.rect.x, player.rect.y)
+                bullets.add(new_bullet)
                 print player.rect.x , player.rect.y
             if event.key == pygame.K_LEFT:
                 player.speed[0] = -4
@@ -116,7 +119,6 @@ while 1:
             if event.key == pygame.K_UP:
                 player.speed[1] = -4
                 player.dir = "u"
-        print player.dir
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 player.speed[0] = 0
@@ -128,11 +130,10 @@ while 1:
     # move everything
     player.move()
 
-    bulley.move()
+    #loops to draw bullets shot (from group) 
+    for individual in bullets:
+        individual.move()
 
-
-    #line for detecting collisions? <3
-    #this was brilliant thank you <3
     if walley.collision(player):
         player.speed[1] = -1*player.speed[1]
         player.speed[0] = -1*player.speed[0]
@@ -145,7 +146,8 @@ while 1:
     # draw stuff
     player.draw()
     walley.draw()
-    bulley.draw()
+    for individual in bullets:
+        individual.draw()
 
     pygame.display.flip()
 
