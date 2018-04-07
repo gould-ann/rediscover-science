@@ -225,8 +225,15 @@ def display_text(text):
         rect.x = 200
         rect.y = 350
         screen.blit(image, rect)
+    if "BEAT" in text:
+        print "adding a pic of EVERYONE"
+        image = pygame.image.load("all_together.png")
+        rect = image.get_rect()
+        rect.x = 50
+        rect.y = 350
+        screen.blit(image, rect)
     pygame.display.update()
-    time.sleep(2)
+    time.sleep(10)
 
 playing_game = False
 play_time = 0
@@ -280,6 +287,7 @@ while 1:
                     if time.time() - play_time < best:
                         json.dump(time.time() - play_time, open("highscore.json", "w"))
                     display_text("YOU BEAT THE GAME!!! it took you: " + str(time.time() - play_time) + " s\\nHighscore is: " + str(json.load(open("highscore.json"))))
+
                     sys.exit()
 
                 read_level("level_" + str(level) + ".txt")
