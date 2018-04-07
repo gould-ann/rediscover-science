@@ -9,6 +9,7 @@ pygame.display.set_mode(size, pygame.DOUBLEBUF)
 black = 50, 50, 50
 screen = pygame.display.set_mode(size)
 
+
 grid = None
 
 
@@ -22,7 +23,7 @@ def draw_grid():
                 rect.y = c*32
                 screen.blit(image, rect)
             if grid[r][c] == "p":
-                image = pygame.image.load("pirate.png")
+                image = pygame.image.load("player.png")
                 rect = image.get_rect()
                 rect.x = r*32
                 rect.y = c*32
@@ -124,7 +125,7 @@ def read_level(file_name):
     for r in range(len(grid)):
         for c in range(len(grid)):
             if grid[r][c] == "r":
-                mobs += [{"type": "REAPER", "position": [r, c]}]
+                mobs += [{"type": "REAPER", "position": [r, c], "health": 3}]
             if grid[r][c] == "p":
                 player_location = [r, c]
 
@@ -139,7 +140,7 @@ def display_text(text):
         screen.blit(label, (50, count*20 + 100))
         pygame.display.update()
         count += 1
-    time.sleep(len(text) / 10)
+    time.sleep(len(text) / 50)
 
 while 1:
     for event in pygame.event.get():
@@ -171,11 +172,11 @@ while 1:
     if currently_moving and time.time() - last_moved > 0.1:
         last_moved = time.time()
         grid[player_location[0]][player_location[1]] = " "
-        if player_direction == "d" and player_location[1] + 1 < len(grid) and grid[player_location[0]][player_location[1] + 1] == " "  or grid[player_location[0]][player_location[1] + 1] == "g":
+        if player_direction == "d" and player_location[1] + 1 < len(grid) and (grid[player_location[0]][player_location[1] + 1] == " "  or grid[player_location[0]][player_location[1] + 1] == "g"):
             player_location[1] += 1
         if player_direction == "u" and player_location[1] - 1 >= 0 and grid[player_location[0]][player_location[1] - 1] == " " or grid[player_location[0]][player_location[1] - 1] == "g":
             player_location[1] -= 1
-        if player_direction == "r" and (player_location[0] + 1 < len(grid)) and grid[player_location[0] + 1][player_location[1]] == " " or grid[player_location[0] + 1][player_location[1]] == "g":
+        if player_direction == "r" and (player_location[0] + 1 < len(grid)) and (grid[player_location[0] + 1][player_location[1]] == " " or grid[player_location[0] + 1][player_location[1]] == "g"):
             player_location[0] += 1
         if player_direction == "l"  and player_location[0] - 1 >= 0 and grid[player_location[0] - 1][player_location[1]] == " " or grid[player_location[0] - 1][player_location[1]] == "g":
             player_location[0] -= 1
@@ -201,7 +202,7 @@ while 1:
                 grid[mob["position"][0]][mob["position"][1]] = "r" 
     screen.fill(black)
     for i in range(len(projectiles)):
-        if projectiles[i]["name"] == "bullet":
+        if projectiles[i] != None and projectiles[i]["name"] == "bullet":
                 image = pygame.image.load("bullet.png")
                 rect = image.get_rect()
                 rect.x = projectiles[i]["position"][0]
@@ -211,14 +212,33 @@ while 1:
                 projectiles[i]["position"][1] += projectiles[i]["speed"][1]
 
                 # ok so now we need a switch for the different things that could be at the bullets location
-                if (projectiles[i]["position"][0] / 32) < 16 and (projectiles[i]["position"][0]/32) <16 and (projectiles[i]["position"][0]/32) > 0 and (projectiles[0]["position"][0]/32) > 0:
-                    bullet_grid_location = [int(projectiles[i]["position"][0] / 32), int(projectiles[i]["position"][0]/32)]
+                # if (projectiles[i]["position"][0] / 32) < 16 and (projectiles[i]["position"][0]/32) <16 and (projectiles[i]["position"][0]/32) > 0 and (projectiles[i]["position"][0]/32) > 0:
+                bullet_grid_location = [int(projectiles[i]["position"][0] / 32), int(projectiles[i]["position"][1]/32)]
             
-                
-                if grid[bullet_grid_location[0]][bullet_grid_location[1]] == "r":
+                print bullet_grid_location, projectiles[i]["position"], int(projectiles[i]["position"][1] / 32)
+
+                if not (bullet_grid_location[0] < 16 and bullet_grid_location[0] >= 0 and bullet_grid_location[1] >= 0 and bullet_grid_location[1] < 16):
+                    projectiles[i] = None
+                elif grid[bullet_grid_location[0]][bullet_grid_location[1]] == "r":
                     # it hit a reaper
                     print "hit a reaper"
-
+                    print mobs
+                    projectiles[i] = None
+                    for i in range(len(mobs)):
+                        if mobs[i]["position"][0] == bullet_grid_location[0] and mobs[i]["position"][1] == bullet_grid_location[1]:
+                            print "hit"
+                            mobs[i]["health"] -= 1
+                            if mobs[i]["health"] < 1:
+                                mobs[i] = None
+                                grid[bullet_grid_location[0]][bullet_grid_location[1]] = " "
+                    while None in mobs:
+                        mobs.remove(None)
+                elif grid[bullet_grid_location[0]][bullet_grid_location[1]] == "s":
+                    # it hit a stone
+                    print "hit a stone"
+                    projectiles[i] = None
+    while None in projectiles:
+        projectiles.remove(None)
 
     
     draw_grid()

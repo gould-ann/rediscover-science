@@ -14,4 +14,4 @@
  , , , , , , , , ,s, , , , , , 
  , , , , , , , , ,s, , , , , , 
  , , , , , , , , , , , , , , , 
- TEXT: hey you found a thing \n good for you!
+ TEXT: Ada Lovelace was the first person to create\n an algorithm based off of machines,\n therefore creating the first computer\n algorithm. Computer algorithms\n are a step by step procedure to solve problems.\n Algorithms are used everywhere in computing today,\n any action you complete on\n any technological device probably\n uses an algorithm to run programs correctly\n (clicking a button on your mouse, reading\n a text message... etc.). Ada Lovelace\n realized that machines could have the potential\n to solve problems of any complexity,\n which is a fundamental concept\n of computer science today.

@@ -14,5 +14,4 @@
  , ,s,s,s,s,s,s,s,s,s,s,s,s, , 
  ,r, , , , , , , , , , , , , , 
  ,s,s,s,s,s,s,s,s,s,s,s,s,s,s, 
- TEXT: hey you found a thing \n good for you!
-\n Plus you won the game so gg
+TEXT: hey you found a thing \n good for you!\n Plus you won the game so gg
