@@ -203,7 +203,7 @@ def display_text(text):
         rect.x = 200
         rect.y = 350
         screen.blit(image, rect)
-    if "turing" in text:
+    if "Turing" in text:
         print "adding a pic of turing"
         image = pygame.image.load("big_turing.png")
         rect = image.get_rect()
@@ -228,7 +228,7 @@ def display_text(text):
     time.sleep(10)
 
 playing_game = False
-
+play_time = 0
 while 1:
     if playing_game:
         for event in pygame.event.get():
@@ -270,7 +270,12 @@ while 1:
                 player_location[0] -= 1
             if grid[player_location[0]][player_location[1]] == "g":
                 level += 1
+
                 display_text(winning_text)
+
+                if level == 6:
+                    display_text("YOU BEAT THE GAME!!! it took you: " + str(time.time() - play_time) + " seconds")
+
                 read_level("level_" + str(level) + ".txt")
             grid[player_location[0]][player_location[1]] = "p"
 
@@ -355,6 +360,7 @@ while 1:
                         print option.text
                         if option.text == "Play game!":
                             playing_game = True
+                            play_time = time.time()
             else:
                 option.hovered = False
             option.draw()
