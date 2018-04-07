@@ -14,4 +14,4 @@
  , , ,s,s,s,s,s,s,s,s, , , , , 
  , , , , , , , , , , , , , , , 
  , , , , , , , , , , , , , , , 
- TEXT: hey you found a thing \n good for you!
+ TEXT: Alan Turing was a gay \nmathematician who worked in Britain's \ncodebreaking center along with Joan Clarke \nduring WW2.  The group in Hut 8 was \nresponsible for breaking the Enigma machine by \nfinding the settings which allowed them to decipher \nGerman messages.  It was previously \nthought to be unbreakable.  In addition \nto shortening the war by an \nestimated 2 years and saving \n14 million lives, \nTuring is considered the father of artificial \nintelligence. Clarke was the only women in the \ngroup and succeed in a \ntime when women were not welcome in \ncryptography or even able to get \na full college degree.  \nThe full extent of her accomplishments are \nnot known because of the secrecy \nof the times.

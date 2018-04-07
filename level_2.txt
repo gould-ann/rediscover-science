@@ -14,17 +14,4 @@
  , , , , , , , , ,s, , , , , , 
  , , , , , , , , ,s, , , , , , 
  , , , , , , , , , , , , , , , 
- TEXT: John Atanasoff  created the first \n
-electronic digital computer at Iowa State\n
-University. The device John Atanasoff\n
-created called the ABC (Atanasoff-Berry computer)\n
-was responsible for solving systems of \n
-linear equations, but also computed binary arithmetic \n
-and electronic switching. Since this \n
-was the first computer made, machine \n
-used paper to write and read inputs! \n
-This is a huge difference then what \n
-we use today \n(digital storage). Without the work \n
-of John Atanasoff where do you \n
-think we would be \n
-without computers?
+ TEXT: John Atanasoff  created the first \nelectronic digital computer at Iowa State\nUniversity. The device John Atanasoff\ncreated called the ABC (Atanasoff-Berry computer)\nwas responsible for solving systems of \nlinear equations, but also computed binary arithmetic \nand electronic switching. Since this \nwas the first computer made, machine \nused paper to write and read inputs! \nThis is a huge difference then what \nwe use today \n(digital storage). Without the work \nof John Atanasoff where do you \nthink we would be \nwithout computers?

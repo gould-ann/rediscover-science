@@ -285,6 +285,7 @@ while 1:
                         if player_health == 0:
                             display_text("GAME OVER!!!")
                             read_level("level_" + str(level) + ".txt")
+                            sys.exit()
                     else:
                         mob["position"] = next_position
                     grid[mob["position"][0]][mob["position"][1]] = "r" 
