@@ -39,8 +39,7 @@ count = 1
 menu_font = pygame.font.Font(None, 40)
 title = [Option("Rediscover Science", (width/20, height/15))]
 options = [Option("Play game!", (width/20, height/4)),
-           Option("Description", (width/20, height/4+50)),
-           Option("Save Devin Uner", (width/20, height/4+100))]
+           Option("Description", (width/20, height/4+50))]
 
 myfont = pygame.font.SysFont("monospace", 15)
 
