@@ -35,7 +35,16 @@ def draw_grid():
                 rect.y = c*32
                 screen.blit(image, rect)
             if grid[r][c] == "g":
-                image = pygame.image.load("objective.png")
+                if level == 1:
+                    image = pygame.image.load("lovelace.png")
+                if level == 1:
+                    image = pygame.image.load("atanasoff.png")
+                if level == 1:
+                    image = pygame.image.load("turing.png")
+                if level == 1:
+                    image = pygame.image.load("johnson.png")
+                if level == 1:
+                    image = pygame.image.load("hopper.png")
                 rect = image.get_rect()
                 rect.x = r*32
                 rect.y = c*32
