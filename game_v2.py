@@ -9,22 +9,7 @@ pygame.display.set_mode(size, pygame.DOUBLEBUF)
 black = 50, 50, 50
 screen = pygame.display.set_mode(size)
 
-grid = [["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "s", "", "", "", "", "", "", "", ""],
-        ["", "", "r", "", "", "", "", "s", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "g", "s", "", "", "", "", "", "", "", ""],
-        ["", "", "", "s", "s", "s", "s", "", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "s", "s", "s", "s", "s", "", "", "", "", ""],
-        ["", "", "", "", "", "", "s", "", "", "", "s", "", "", "", "", ""],
-        ["", "", "", "", "", "", "s", "", "", "", "s", "", "", "", "", ""],
-        ["", "", "", "", "", "", "s", "", "", "", "s", "", "", "", "", ""],
-        ["", "", "", "", "", "", "s", "", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "s", "", "s", "", "s", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", "", "s", "s", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]]
+grid = None
 
 
 def draw_grid():
@@ -61,9 +46,10 @@ last_moved = 0
 currently_moving = False
 player_direction = "r"
 player_location = [0, 0]
-grid[player_location[0]][player_location[1]] = "p"
 player_health = 10
+winning_text = ""
 
+level = 1
 
 # stuff for REAPERS
 last_enemy_move = 0
@@ -78,19 +64,19 @@ def get_next_reaper_position(current_reaper_pos):
         new_spreading_spots = []
         for spot in spreading_spots:
 
-            if spot[0] + 1 < len(a_star_grid) and a_star_grid[spot[0] + 1][spot[1] + 0] == " " and grid[spot[0] + 1][spot[1]] != "s":
+            if spot[0] + 1 < len(a_star_grid) and a_star_grid[spot[0] + 1][spot[1] + 0] == " " and grid[spot[0] + 1][spot[1]] != "s" and grid[spot[0] + 1][spot[1]] != "g":
                 new_spreading_spots += [(spot[0] + 1, spot[1] + 0)]
                 a_star_grid[spot[0] + 1][spot[1] + 0] = "u"
 
-            if spot[0] - 1 >= 0 and a_star_grid[spot[0] - 1][spot[1] + 0] == " " and grid[spot[0] - 1][spot[1]] != "s":
+            if spot[0] - 1 >= 0 and a_star_grid[spot[0] - 1][spot[1] + 0] == " " and grid[spot[0] - 1][spot[1]] != "s" and grid[spot[0] - 1][spot[1]] != "g":
                 new_spreading_spots += [(spot[0] - 1, spot[1] + 0)]
                 a_star_grid[spot[0] - 1][spot[1] + 0] = "d"
 
-            if spot[1] + 1 < len(a_star_grid) and a_star_grid[spot[0] + 0][spot[1] + 1] == " " and grid[spot[0]][spot[1] + 1] != "s":
+            if spot[1] + 1 < len(a_star_grid) and a_star_grid[spot[0] + 0][spot[1] + 1] == " " and grid[spot[0]][spot[1] + 1] != "s" and grid[spot[0]][spot[1] + 1] != "g":
                 new_spreading_spots += [(spot[0] + 0, spot[1] + 1)]
                 a_star_grid[spot[0] + 0][spot[1] + 1] = "r"
 
-            if spot[1] - 1 >= 0 and a_star_grid[spot[0] + 0][spot[1] - 1] == " " and grid[spot[0]][spot[1] - 1] != "s":
+            if spot[1] - 1 >= 0 and a_star_grid[spot[0] + 0][spot[1] - 1] == " " and grid[spot[0]][spot[1] - 1] != "s" and grid[spot[0]][spot[1] - 1] != "g":
                 new_spreading_spots += [(spot[0] + 0, spot[1] - 1)]
                 a_star_grid[spot[0] + 0][spot[1] - 1] = "l"
         spreading_spots = new_spreading_spots
@@ -125,22 +111,30 @@ def read_level(file_name):
     global mobs
     global player_location
     global grid
-    f = open(file_name)
+    global winning_text
+    mobs = []
+    f = open(file_name, "r")
     grid = []
     for line in f:
-        grid += line.split(",")
+        if "TEXT: " in line:
+            winning_text = line.replace("TEXT: ", "")
+        else:
+            grid += [line.split(",")]
+    print len(grid), len(grid[0])
     for r in range(len(grid)):
         for c in range(len(grid)):
             if grid[r][c] == "r":
                 mobs += [{"type": "REAPER", "position": [r, c]}]
             if grid[r][c] == "p":
                 player_location = [r, c]
+
+read_level("level_1.txt")
 projectiles = []
 
 def display_text(text):
     screen.fill(black)
     count = 1
-    for l in text.split("\n"):
+    for l in text.split("\\n"):
         label = myfont.render(l, 1, (0,255,255))
         screen.blit(label, (50, count*20 + 100))
         pygame.display.update()
@@ -176,29 +170,32 @@ while 1:
     # print currently_moving
     if currently_moving and time.time() - last_moved > 0.1:
         last_moved = time.time()
-        grid[player_location[0]][player_location[1]] = ""
-        if player_direction == "d" and player_location[1] + 1 < len(grid) and grid[player_location[0]][player_location[1] + 1] == ""  or grid[player_location[0]][player_location[1] + 1] == "g":
+        grid[player_location[0]][player_location[1]] = " "
+        if player_direction == "d" and player_location[1] + 1 < len(grid) and grid[player_location[0]][player_location[1] + 1] == " "  or grid[player_location[0]][player_location[1] + 1] == "g":
             player_location[1] += 1
-        if player_direction == "u" and player_location[1] - 1 >= 0 and grid[player_location[0]][player_location[1] - 1] == "" or grid[player_location[0]][player_location[1] - 1] == "g":
+        if player_direction == "u" and player_location[1] - 1 >= 0 and grid[player_location[0]][player_location[1] - 1] == " " or grid[player_location[0]][player_location[1] - 1] == "g":
             player_location[1] -= 1
-        if player_direction == "r" and (player_location[0] + 1 < len(grid)) and grid[player_location[0] + 1][player_location[1]] == "" or grid[player_location[0] + 1][player_location[1]] == "g":
+        if player_direction == "r" and (player_location[0] + 1 < len(grid)) and grid[player_location[0] + 1][player_location[1]] == " " or grid[player_location[0] + 1][player_location[1]] == "g":
             player_location[0] += 1
-        if player_direction == "l"  and player_location[0] - 1 >= 0 and grid[player_location[0] - 1][player_location[1]] == "" or grid[player_location[0] - 1][player_location[1]] == "g":
+        if player_direction == "l"  and player_location[0] - 1 >= 0 and grid[player_location[0] - 1][player_location[1]] == " " or grid[player_location[0] - 1][player_location[1]] == "g":
             player_location[0] -= 1
         if grid[player_location[0]][player_location[1]] == "g":
-            display_text("""hey you found some sort of object!\nthats probably good!""")
+            level += 1
+            display_text(winning_text)
+            read_level("level_" + str(level) + ".txt")
         grid[player_location[0]][player_location[1]] = "p"
 
     if time.time() - last_enemy_move > 0.4:
         last_enemy_move = time.time()
         for mob in mobs:
-            grid[mob["position"][0]][mob["position"][1]] = ""
+            grid[mob["position"][0]][mob["position"][1]] = " "
             if mob["type"] == "REAPER":
                 next_position = get_next_reaper_position(mob["position"])
                 if next_position[0] == player_location[0] and next_position[1] == player_location[1]:
                     player_health -= 1
                     if player_health == 0:
                         display_text("GAME OVER!!!")
+                        read_level("level_" + str(level) + ".txt")
                 else:
                     mob["position"] = next_position
                 grid[mob["position"][0]][mob["position"][1]] = "r" 
