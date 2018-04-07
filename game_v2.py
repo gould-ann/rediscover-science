@@ -3,6 +3,7 @@ import sys
 import time
 
 pygame.init()
+myfont = pygame.font.SysFont("monospace", 15)
 size = width, height = 512, 512
 pygame.display.set_mode(size, pygame.DOUBLEBUF)
 black = 50, 50, 50
@@ -10,8 +11,8 @@ screen = pygame.display.set_mode(size)
 
 grid = [["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
         ["", "", "", "", "", "", "", "s", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "s", "", "", "", "", "", "", "", ""],
-        ["", "", "", "", "", "", "", "s", "", "", "", "", "", "", "", ""],
+        ["", "", "r", "", "", "", "", "s", "", "", "", "", "", "", "", ""],
+        ["", "", "", "", "", "", "g", "s", "", "", "", "", "", "", "", ""],
         ["", "", "", "s", "s", "s", "s", "", "", "", "", "", "", "", "", ""],
         ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
         ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
@@ -47,15 +48,21 @@ def draw_grid():
                 rect.x = r*32
                 rect.y = c*32
                 screen.blit(image, rect)
+            if grid[r][c] == "g":
+                image = pygame.image.load("objective.png")
+                rect = image.get_rect()
+                rect.x = r*32
+                rect.y = c*32
+                screen.blit(image, rect)
 
 
 # stuff for player movement
 last_moved = 0
 currently_moving = False
 player_direction = "r"
-player_location = [10, 10]
+player_location = [0, 0]
 grid[player_location[0]][player_location[1]] = "p"
-
+player_health = 10
 
 
 # stuff for REAPERS
@@ -109,10 +116,36 @@ def get_next_reaper_position(current_reaper_pos):
     #     print ""
     return old_point
 
+def display_health():
+    label = myfont.render(str(player_health), 1, (0,255,255))
+    screen.blit(label, (15, 480))
 
-
-mobs = [{"type": "REAPER", "position": [1, 1]}]
+mobs = []
+def read_level(file_name):
+    global mobs
+    global player_location
+    global grid
+    f = open(file_name)
+    grid = []
+    for line in f:
+        grid += line.split(",")
+    for r in range(len(grid)):
+        for c in range(len(grid)):
+            if grid[r][c] == "r":
+                mobs += [{"type": "REAPER", "position": [r, c]}]
+            if grid[r][c] == "p":
+                player_location = [r, c]
 projectiles = []
+
+def display_text(text):
+    screen.fill(black)
+    count = 1
+    for l in text.split("\n"):
+        label = myfont.render(l, 1, (0,255,255))
+        screen.blit(label, (50, count*20 + 100))
+        pygame.display.update()
+        count += 1
+    time.sleep(len(text) / 10)
 
 while 1:
     for event in pygame.event.get():
@@ -144,14 +177,16 @@ while 1:
     if currently_moving and time.time() - last_moved > 0.1:
         last_moved = time.time()
         grid[player_location[0]][player_location[1]] = ""
-        if player_direction == "d" and player_location[1] + 1 < len(grid) and grid[player_location[0]][player_location[1] + 1] == "":
+        if player_direction == "d" and player_location[1] + 1 < len(grid) and grid[player_location[0]][player_location[1] + 1] == ""  or grid[player_location[0]][player_location[1] + 1] == "g":
             player_location[1] += 1
-        if player_direction == "u" and player_location[1] - 1 >= 0 and grid[player_location[0]][player_location[1] - 1] == "":
+        if player_direction == "u" and player_location[1] - 1 >= 0 and grid[player_location[0]][player_location[1] - 1] == "" or grid[player_location[0]][player_location[1] - 1] == "g":
             player_location[1] -= 1
-        if player_direction == "r" and player_location[0] + 1 < len(grid) and grid[player_location[0] + 1][player_location[1]] == "":
+        if player_direction == "r" and (player_location[0] + 1 < len(grid)) and grid[player_location[0] + 1][player_location[1]] == "" or grid[player_location[0] + 1][player_location[1]] == "g":
             player_location[0] += 1
-        if player_direction == "l"  and player_location[0] - 1 >= 0 and grid[player_location[0] - 1][player_location[1]] == "":
+        if player_direction == "l"  and player_location[0] - 1 >= 0 and grid[player_location[0] - 1][player_location[1]] == "" or grid[player_location[0] - 1][player_location[1]] == "g":
             player_location[0] -= 1
+        if grid[player_location[0]][player_location[1]] == "g":
+            display_text("""hey you found some sort of object!\nthats probably good!""")
         grid[player_location[0]][player_location[1]] = "p"
 
     if time.time() - last_enemy_move > 0.4:
@@ -161,7 +196,9 @@ while 1:
             if mob["type"] == "REAPER":
                 next_position = get_next_reaper_position(mob["position"])
                 if next_position[0] == player_location[0] and next_position[1] == player_location[1]:
-                    print "FIGHT"
+                    player_health -= 1
+                    if player_health == 0:
+                        display_text("GAME OVER!!!")
                 else:
                     mob["position"] = next_position
                 grid[mob["position"][0]][mob["position"][1]] = "r" 
@@ -188,4 +225,5 @@ while 1:
 
     
     draw_grid()
+    display_health()
     pygame.display.update()
