@@ -45,7 +45,7 @@ options = [Option("Play game!", (width/20, height/4)),
 myfont = pygame.font.SysFont("monospace", 15)
 
 pygame.display.set_mode(size, pygame.DOUBLEBUF)
-black = 50, 50, 50
+black = 102, 102, 153
 
 
 
